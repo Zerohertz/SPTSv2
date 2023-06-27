@@ -5,8 +5,9 @@ import cv2
 import torch
 import bezier
 import numpy as np
+from PIL import ImageFont, ImageDraw, Image
 
-    
+
 def extract_result_from_output_seqs(
      seqs, rec_score, key_pts='center_pts', key_label='rec', return_index=False,
      bins=1000, padding_bins=0, pad_rec=True, text_length=25, chars=[]
@@ -126,7 +127,12 @@ def convert_rec_to_str(rec_labels, chars):
     return strs
 
 def draw_text(image, text, pt):
-    cv2.putText(image, text, (int(pt[0]), int(pt[1])), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+    fontpath = "./font.ttc"
+    font = ImageFont.truetype(fontpath, 20)
+    img_pil = Image.fromarray(image)
+    draw = ImageDraw.Draw(img_pil)
+    draw.text((int(pt[0]), int(pt[1])), text, font=font, fill=(0, 255, 0, 0))
+    image = np.array(img_pil)
     return image
 
 def vis_output_seqs(samples, output_seqs, rec_scores, remove_padding=False, pad_rec=False, text_length=25, chars=[]):
