@@ -361,10 +361,7 @@ class Compose(object):
         return format_string
 
 def read_word_list(word_list_file):
-    words = open(word_list_file, 'r').read().splitlines()
-    words = words[1:]
-    words = [word.split('\t')[0] for word in words]
-    words = [word.split('/')[0] for word in words]
+    words = open(word_list_file, 'r').readlines()[0]
     return words
 
 class RandomRotate(object):
