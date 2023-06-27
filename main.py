@@ -260,4 +260,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    with open(args.dict_name, 'r') as f:
+        args.chars = f.readlines()[0]
+    args.no_known_char = len(args.chars)
+    args.pad_rec_index = len(args.chars) + 1
     main(args)
