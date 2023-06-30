@@ -1,5 +1,7 @@
+*.sh
 __pycache__
 *.ttc
 
 data
+weights
 output
