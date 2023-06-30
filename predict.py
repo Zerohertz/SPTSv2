@@ -13,6 +13,8 @@ import cv2
 import util.misc_sptsv2 as utils
 from util.data import process_args
 from models import build_model
+from util.visualize import draw_text
+
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Set SPTSv2', add_help=False)
@@ -123,15 +125,19 @@ def main(args):
                 else:
                     break
             cv2.circle(img, (int(pts_x), int(pts_y)), 3, (255, 0, 0), -1)
-            cv2.putText(img, text, (int(pts_x), int(pts_y)), cv2.FONT_HERSHEY_COMPLEX, 0.75, (0, 255, 0), 2)
+            img = draw_text(img, text, (int(pts_x), int(pts_y)))
     
     cv2.imwrite('test_'+args.img_path.split('/')[-1],img)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('SPTSv2 yyds', parents=[get_args_parser()])
     args = parser.parse_args()
+    with open('data/dict.txt', 'r') as f:
+        args.chars = f.readlines()[0]
     args.img_path = 'IMG/0000245.jpg'
     args.resume = 'your_weight_path'
     args.pre_norm = True
     args.pad_rec = True
+    args.no_known_char = len(args.chars)
+    args.pad_rec_index = len(args.chars) + 1
     main(args)
