@@ -195,11 +195,18 @@ def main(args):
                 args.resume, map_location='cpu', check_hash=True)
         else:
             checkpoint = torch.load(args.resume, map_location='cpu')
-        model_without_ddp.load_state_dict(checkpoint['model'])
-        if not args.eval and 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
-            args.start_epoch = checkpoint['epoch'] + 1
+        try:
+            model_without_ddp.load_state_dict(checkpoint['model'])
+            if not args.eval and 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
+                optimizer.load_state_dict(checkpoint['optimizer'])
+                lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
+                args.start_epoch = checkpoint['epoch'] + 1
+        except:
+            checkpoint_model = {}
+            for layer, weights in checkpoint['model'].items():
+                if not layer in ['transformer.embedding.word_embeddings.weight', 'transformer.embedding.position_embeddings.weight', 'vocab_embed.layers.2.weight', 'vocab_embed.layers.2.bias']:
+                    checkpoint_model[layer] = weights
+            model_without_ddp.load_state_dict(checkpoint_model, strict=False)
 
     if args.eval:
         if dataset_val is None:
