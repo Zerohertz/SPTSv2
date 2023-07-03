@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 import util.misc_sptsv2 as utils
 from util.visualize import vis_output_seqs, extract_result_from_output_seqs, convert_rec_to_str
+from datasets.batch_visualization import bv
 
 def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
@@ -30,6 +31,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
     optimizer.param_groups[1]['lr'] = lr_scheduler[epoch] * 0.1
 
     for samples, input_box_seqs, input_label_seqs, output_box_seqs, output_label_seqs in metric_logger.log_every(data_loader, print_freq, header):
+        bv(samples)
         samples = samples.to(device); input_box_seqs = input_box_seqs.to(device); input_label_seqs = input_label_seqs.to(device); output_box_seqs = output_box_seqs.to(device)
         output_label_seqs = output_label_seqs.to(device)
         if not all(input_label_seqs.tolist()):
