@@ -313,6 +313,8 @@ class NestedTensor(object):
     def __repr__(self):
         return str(self.tensors)
 
+    def __getitem__(self, key):
+        return self.tensors[key]
 
 def nested_tensor_from_tensor_list(tensor_list: List[Tensor]):
     # TODO make this more general
