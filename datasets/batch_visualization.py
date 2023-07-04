@@ -17,8 +17,14 @@ class BatchVisualization:
         except:
             pass
         if not root in os.listdir():
-            os.mkdir(root)
-        os.mkdir(self.dir)
+            try:
+                os.mkdir(root)
+            except:
+                pass
+        try:
+            os.mkdir(self.dir)
+        except:
+            pass
         self.max_length = max_length
         with open('data/dict.txt', 'r') as f:
             self.chars = f.readlines()[0]
