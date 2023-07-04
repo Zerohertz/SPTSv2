@@ -29,10 +29,7 @@ class BatchVisualization:
         with open('data/dict.txt', 'r') as f:
             self.chars = f.readlines()[0]
     def bv(self, samples, ils):
-        '''
-        FIXME: Sometimes, there are wrong GTs in results
-        '''
-        gt_scores = torch.ones(1, 5000, 1000 + len(self.chars))
+        gt_scores = torch.ones(len(samples), 1, 1000 + len(self.chars))
         imgs = vis_output_seqs(samples, ils, gt_scores, remove_padding=False, pad_rec=True, text_length=self.max_length, chars=self.chars)
         for img in imgs:
             name = os.path.join(
