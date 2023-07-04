@@ -30,9 +30,19 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
     optimizer.param_groups[0]['lr'] = lr_scheduler[epoch]
     optimizer.param_groups[1]['lr'] = lr_scheduler[epoch] * 0.1
 
-    bv = BatchVisualization(epoch)
+    bv = BatchVisualization(epoch, text_length)
     for samples, input_box_seqs, input_label_seqs, output_box_seqs, output_label_seqs in metric_logger.log_every(data_loader, print_freq, header):
-        bv.bv(samples)
+        '''
+        TODO
+        input_box_seqs
+        input_label_seqs
+        output_box_seqs
+        output_label_seqs
+        '''
+        b = output_box_seqs[:, :-1].clone().reshape(2,-1,2)
+        l = output_label_seqs.clone().reshape(2,-1,text_length)
+        x = torch.cat((b, l), 2)
+        bv.bv(samples, x.reshape(2,-1))
         samples = samples.to(device); input_box_seqs = input_box_seqs.to(device); input_label_seqs = input_label_seqs.to(device); output_box_seqs = output_box_seqs.to(device)
         output_label_seqs = output_label_seqs.to(device)
         if not all(input_label_seqs.tolist()):

@@ -9,7 +9,7 @@ from util.visualize import vis_output_seqs
 
 
 class BatchVisualization:
-    def __init__(self, epoch, root='bv', dir='bv', ):
+    def __init__(self, epoch, max_length, root='bv', dir='bv'):
         self.dir = os.path.join(root, dir + '_' + str(epoch))
         self.epoch = epoch
         try:
@@ -19,6 +19,7 @@ class BatchVisualization:
         if not root in os.listdir():
             os.mkdir(root)
         os.mkdir(self.dir)
+        self.max_length = max_length
         with open('data/dict.txt', 'r') as f:
             self.chars = f.readlines()[0]
     def bv(self, samples, ils):
@@ -26,7 +27,7 @@ class BatchVisualization:
         FIXME: Sometimes, there are wrong GTs in results
         '''
         gt_scores = torch.ones(1, 5000, 1000 + len(self.chars))
-        imgs = vis_output_seqs(samples, ils, gt_scores, remove_padding=False, pad_rec=True, text_length=50, chars=self.chars)
+        imgs = vis_output_seqs(samples, ils, gt_scores, remove_padding=False, pad_rec=True, text_length=self.max_length, chars=self.chars)
         for img in imgs:
             name = os.path.join(
                 self.dir,
